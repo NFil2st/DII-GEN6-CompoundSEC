@@ -32,7 +32,7 @@ abstract class AccessCard {
 
 
     class EmployeeKeycard implements KeyCard {
-        private int[] allowedRooms = {card1.getRoom()};  // ห้องที่พนักงานสามารถเข้าถึง
+        private int[] allowedRooms = {card1.getRoom()};
         private int[] allowedFloors = {card1.getFlood()};
 
         @Override
@@ -68,7 +68,6 @@ class EmployeeCard extends AccessCard {
         System.out.println("Access to Floor: " + card1.getFlood());
     }
 
-    // สร้าง EmployeeKeycard เพื่อทดสอบการเข้าถึงห้องและชั้น
     public KeyCard getEmployeeKeycard() {
         return new EmployeeKeycard();
     }
