@@ -2,10 +2,13 @@ class Card {
     private int room;
     private int flood;
 
-    public Card(int r,int f) {
+    public Card(int r, int f) {
         room = r;
         flood = f;
     }
+
+    
+
     public int getRoom() {
         return room;
     }
@@ -17,7 +20,6 @@ class Card {
 
 interface KeyCard {
     boolean canAccessRoom(int roomNumber);
-
     boolean canAccessFloor(int floorNumber);
 }
 
@@ -30,10 +32,14 @@ abstract class AccessCard {
 
     abstract public void manufacture();
 
-
     class EmployeeKeycard implements KeyCard {
-        private int[] allowedRooms = {card1.getRoom()};
-        private int[] allowedFloors = {card1.getFlood()};
+        private int[] allowedRooms;
+        private int[] allowedFloors;
+
+        public EmployeeKeycard(int[] rooms, int[] floors) {
+            this.allowedRooms = rooms;
+            this.allowedFloors = floors;
+        }
 
         @Override
         public boolean canAccessRoom(int roomNumber) {
@@ -54,21 +60,5 @@ abstract class AccessCard {
             }
             return false;
         }
-    }
-}
-class EmployeeCard extends AccessCard {
-
-    public EmployeeCard(Card card1) {
-        super(card1);
-    }
-
-    @Override
-    public void manufacture() {
-        System.out.println("Access to Room: " + card1.getRoom());
-        System.out.println("Access to Floor: " + card1.getFlood());
-    }
-
-    public KeyCard getEmployeeKeycard() {
-        return new EmployeeKeycard();
     }
 }
