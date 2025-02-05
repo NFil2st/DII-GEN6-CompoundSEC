@@ -16,6 +16,14 @@ class Card {
     public int getFlood() {
         return flood;
     }
+
+    public void setRoom(int room) {
+        this.room = room;
+    }
+
+    public void setFlood(int flood) {
+        this.flood = flood;
+    }
 }
 
 interface KeyCard {

@@ -10,7 +10,7 @@ public class Main {
         System.out.print("Enter 1 Admin , Enter 2 customer : ");
         int role = sc.nextInt();
         if(role == 1){
-            System.out.print("Enter password for admin only : ");
+            System.out.print("Enter Password for Admin only : ");
             int password = sc.nextInt();
 
             if(password == info.passwordAdmin){
@@ -21,6 +21,22 @@ public class Main {
             }
         }else if(role == 2){
             card = new Customer();
+        }else if(role == 0){
+            System.out.print("Enter Password for Manager only : ");
+            int password = sc.nextInt();
+
+            if(password == info.passwordManager){
+                System.out.println("Welcome to Manager card!");
+                card = new Manager();
+                System.out.print("Do you want to change access? (yes/no): ");
+                String response = sc.next();
+                if (response.equalsIgnoreCase("yes")) {
+                    ((Manager) card).changeAccess();
+                    System.out.println("Access changed.");
+                }
+            }else{
+                System.err.println("You have no right.");
+            }
         }
 
         System.out.print("Enter room number : ");
@@ -35,6 +51,11 @@ public class Main {
         else if (card instanceof Customer) {
             System.out.println("Customer can access room " + ExRoom + " : " + ((Customer) card).comeRoom(ExRoom));
             System.out.println("Customer can access floor " + ExFloor + " : " + ((Customer) card).comeFloor(ExFloor));
+        } 
+        else if (card instanceof Manager) {
+
+            System.out.println("Manager can access room " + ExRoom + " : " + ((Manager) card).comeRoom(ExRoom));
+            System.out.println("Manager can access floor " + ExFloor + " : " + ((Manager) card).comeFloor(ExFloor));
         }
         else {
         System.err.println("No card available. Access denied.");
