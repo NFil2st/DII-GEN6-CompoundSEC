@@ -13,7 +13,7 @@ public class Main {
             System.out.print("Enter Password for Admin only : ");
             int password = sc.nextInt();
 
-            if(password == info.passwordAdmin){
+            if(info.passwordAdmin.equals(password)){
                 System.out.println("Welcome to Admin card!");
                 card = new Admin();
             }else{
@@ -25,7 +25,7 @@ public class Main {
             System.out.print("Enter Password for Manager only : ");
             int password = sc.nextInt();
 
-            if(password == info.passwordManager){
+            if(info.passwordManager.equals(password)){
                 System.out.println("Welcome to Manager card!");
                 card = new Manager();
                 System.out.print("Do you want to change access? (yes/no): ");

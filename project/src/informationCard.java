@@ -7,7 +7,7 @@ public class informationCard {
     public static final int[] floorCustomer = {1};
 
     
-    public static final int passwordAdmin = 1234;
+    public static final String passwordAdmin = "1234";
 
-    public static final int passwordManager = 12345;
+    public static final String passwordManager = "12345";
 }
