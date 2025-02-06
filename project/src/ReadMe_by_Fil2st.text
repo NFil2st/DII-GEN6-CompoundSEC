@@ -8,7 +8,7 @@ Date update 05/02/2568
 เก็บข้อมูลเกี่ยวกับห้องและชั้นที่ผู้ใช้งานสามารถเข้าถึงได้
 มีการประกาศค่าคงที่ roomAdmin, floorAdmin สำหรับ Admin และ roomCustomer, floorCustomer สำหรับ Customer
 รหัสผ่านของ Admin (passwordAdmin) และ Manager (passwordManager) ก็ถูกเก็บไว้ที่นี่
-ูู^
+^
 |
 สามารถเปลี่ยนแปลงก่อนเริ่มโปรแกรมได้
 --------------------------------------------------
