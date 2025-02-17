@@ -7,7 +7,7 @@ public class Framerole extends JFrame {
     private JButton submitButton, sureButton;
     private JPasswordField passwordadminField, passwordmanagerField;
 
-    informationCard info = new informationCard();
+    informationCard info = informationCard.getInstance();
     Object card = null;
 
     public Framerole() {

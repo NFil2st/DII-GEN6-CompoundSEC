@@ -1,28 +1,29 @@
+import java.util.Set;
+import java.util.HashSet;
+
 class Card {
     private int room;
-    private int flood;
+    private int floor;
 
     public Card(int r, int f) {
         room = r;
-        flood = f;
+        floor = f;
     }
-
-    
 
     public int getRoom() {
         return room;
     }
 
-    public int getFlood() {
-        return flood;
+    public int getFloor() {
+        return floor;
     }
 
     public void setRoom(int room) {
         this.room = room;
     }
 
-    public void setFlood(int flood) {
-        this.flood = flood;
+    public void setFloor(int floor) {
+        this.floor = floor;
     }
 }
 
@@ -31,42 +32,22 @@ interface KeyCard {
     boolean canAccessFloor(int floorNumber);
 }
 
-abstract class AccessCard {
-    protected Card card1;
+class EmployeeKeycard implements KeyCard {
+    private Set<Integer> allowedRooms;
+    private Set<Integer> allowedFloors;
 
-    protected AccessCard(Card card1) {
-        this.card1 = card1;
+    public EmployeeKeycard(Set<Integer> rooms, Set<Integer> floors) {
+        this.allowedRooms = rooms;
+        this.allowedFloors = floors;
     }
 
-    abstract public void manufacture();
+    @Override
+    public boolean canAccessRoom(int roomNumber) {
+        return allowedRooms.contains(roomNumber);
+    }
 
-    class EmployeeKeycard implements KeyCard {
-        private int[] allowedRooms;
-        private int[] allowedFloors;
-
-        public EmployeeKeycard(int[] rooms, int[] floors) {
-            this.allowedRooms = rooms;
-            this.allowedFloors = floors;
-        }
-
-        @Override
-        public boolean canAccessRoom(int roomNumber) {
-            for (int room : allowedRooms) {
-                if (room == roomNumber) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        @Override
-        public boolean canAccessFloor(int floorNumber) {
-            for (int floor : allowedFloors) {
-                if (floor == floorNumber) {
-                    return true;
-                }
-            }
-            return false;
-        }
+    @Override
+    public boolean canAccessFloor(int floorNumber) {
+        return allowedFloors.contains(floorNumber);
     }
 }

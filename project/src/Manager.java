@@ -1,47 +1,21 @@
-import java.util.Scanner;
+import java.util.Set;
 
 public class Manager {
+    private KeyCard keyCard;
 
-    informationCard info = new informationCard();
+    public Manager() {
+        this.keyCard = new ManagerCardDecorator(new EmployeeKeycard(Set.of(), Set.of())); // Manager เข้าทุกที่
+    }
 
-        Card card = new Card(0, 0);
+    public boolean comeRoom(int r) {
+        return keyCard.canAccessRoom(r);
+    }
 
-        EmployeeCardmanager employeeCard = new EmployeeCardmanager(card);
-
-        int[] allowedRooms = {card.getRoom()};
-        int[] allowedFloors = {card.getFlood()};
-        
-        KeyCard keyCard = employeeCard.getEmployeeKeycard(allowedRooms, allowedFloors);
-
-    public boolean comeRoom(int r){
-        for (int room : allowedRooms) {
-            if (room == r) {
-                return true;
-            }
-        }
-        return false;
-            }
-
-    public boolean comeFloor(int f){
-        for (int floor : allowedFloors) {
-            if (floor == f) {
-                return true;
-            }
-        }
-        return false;
-            }
+    public boolean comeFloor(int f) {
+        return keyCard.canAccessFloor(f);
+    }
 
     public void changeAccess() {
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Edit Access to Room: " );
-        int r = sc.nextInt();
-        System.out.print("Edit Access to Floor: " );
-        int f = sc.nextInt();
-
-        card.setRoom(r);
-        card.setFlood(f);
-
-        allowedRooms = new int[]{card.getRoom()};
-        allowedFloors = new int[]{card.getFlood()}; 
+        System.out.println("Manager can modify access rights.");
     }
 }

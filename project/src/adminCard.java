@@ -1,18 +1,20 @@
-class EmployeeCardadmin extends AccessCard {
+import java.util.Set;
 
-    public EmployeeCardadmin(Card card1) {
-        super(card1);
+class AdminCardDecorator extends BaseCardDecorator {
+    private static final Set<Integer> adminRooms = Set.of(101, 102, 103);
+    private static final Set<Integer> adminFloors = Set.of(1, 2, 3);
+
+    public AdminCardDecorator(KeyCard card) {
+        super(card);
     }
 
     @Override
-    public void manufacture() {
-        
-        System.out.println("Access to Room: " + card1.getRoom());
-        System.out.println("Access to Floor: " + card1.getFlood());
+    public boolean canAccessRoom(int roomNumber) {
+        return super.canAccessRoom(roomNumber) || adminRooms.contains(roomNumber);
     }
 
-    public KeyCard getEmployeeKeycard(int[] rooms, int[] floors) {
-
-        return new EmployeeKeycard(rooms, floors);
+    @Override
+    public boolean canAccessFloor(int floorNumber) {
+        return super.canAccessFloor(floorNumber) || adminFloors.contains(floorNumber);
     }
 }

@@ -6,7 +6,7 @@ public class ScanCard extends JFrame {
     private JPasswordField roomField, floorField;
     private JButton button;
 
-    informationCard info = new informationCard();
+    informationCard info = informationCard.getInstance();
 
     public ScanCard(String role, Object card) {
         setTitle(role + " Window");

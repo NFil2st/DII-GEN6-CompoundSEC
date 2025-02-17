@@ -1,31 +1,23 @@
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 public class Customer {
+    private KeyCard keyCard;
 
-    informationCard info = new informationCard();
+    public Customer() {
+        informationCard info = informationCard.getInstance();
+        Set<Integer> allowedRooms = IntStream.of(info.roomCustomer).boxed().collect(Collectors.toSet());
+        Set<Integer> allowedFloors = IntStream.of(info.floorCustomer).boxed().collect(Collectors.toSet());
 
-    Card card = new Card(0, 0);
-
-    EmployeeCardadmin employeeCard = new EmployeeCardadmin(card);
-
-    int[] allowedRooms = info.roomCustomer;
-    int[] allowedFloors = info.floorCustomer;
-
-    KeyCard keyCard = employeeCard.getEmployeeKeycard(info.roomCustomer, info.floorCustomer);
-
-public boolean comeRoom(int r){
-    for (int room : allowedRooms) {
-        if (room == r) {
-            return true;
-        }
+        this.keyCard = new CustomerCardDecorator(new EmployeeKeycard(allowedRooms, allowedFloors));
     }
-    return false;
-        }
 
-public boolean comeFloor(int f){
-        for (int floor : allowedFloors) {
-            if (floor == f) {
-                return true;
-            }
-        }
-        return false;
-            }
+    public boolean comeRoom(int r) {
+        return keyCard.canAccessRoom(r);
+    }
+
+    public boolean comeFloor(int f) {
+        return keyCard.canAccessFloor(f);
+    }
 }

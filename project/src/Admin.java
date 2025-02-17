@@ -1,31 +1,23 @@
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 public class Admin {
+    private KeyCard keyCard;
 
-    informationCard info = new informationCard();
+    public Admin() {
+        informationCard info = informationCard.getInstance();
+        Set<Integer> allowedRooms = IntStream.of(info.roomAdmin).boxed().collect(Collectors.toSet());
+        Set<Integer> allowedFloors = IntStream.of(info.floorAdmin).boxed().collect(Collectors.toSet());
 
-        Card card = new Card(0, 0);
+        this.keyCard = new AdminCardDecorator(new EmployeeKeycard(allowedRooms, allowedFloors));
+    }
 
-        EmployeeCardadmin employeeCard = new EmployeeCardadmin(card);
+    public boolean comeRoom(int r) {
+        return keyCard.canAccessRoom(r);
+    }
 
-        int[] allowedRooms = info.roomAdmin;
-        int[] allowedFloors = info.floorAdmin;
-
-        KeyCard keyCard = employeeCard.getEmployeeKeycard(allowedRooms, allowedFloors);
-
-    public boolean comeRoom(int r){
-        for (int room : allowedRooms) {
-            if (room == r) {
-                return true;
-            }
-        }
-        return false;
-            }
-
-    public boolean comeFloor(int f){
-            for (int floor : allowedFloors) {
-                if (floor == f) {
-                    return true;
-                }
-            }
-            return false;
-                }
+    public boolean comeFloor(int f) {
+        return keyCard.canAccessFloor(f);
+    }
 }
