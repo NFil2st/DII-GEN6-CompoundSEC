@@ -1,10 +1,13 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.Arrays;
 import javax.swing.*;
 
 public class Framerole extends JFrame {
     private JComboBox<String> roleComboBox;
-    private JButton submitButton, sureButton;
+    private JButton submitButton, sureButton, changeButton;
     private JPasswordField passwordadminField, passwordmanagerField;
 
     informationCard info = informationCard.getInstance();
@@ -46,6 +49,7 @@ public class Framerole extends JFrame {
             JOptionPane.showMessageDialog(this, "Welcome Customer!");
             card = new Customer();
             new ScanCard("Customer", card);
+            this.dispose();
         } else if (role == 3) {
             openManagerWindow();
         } else {
@@ -79,6 +83,7 @@ public class Framerole extends JFrame {
                     JOptionPane.showMessageDialog(adminWindow, "Welcome Admin!");
                     card = new Admin();
                     new ScanCard("Admin", card);
+                    adminWindow.dispose();
                 } else {
                     JOptionPane.showMessageDialog(adminWindow, "Incorrect password.");
                 }
@@ -115,17 +120,74 @@ public class Framerole extends JFrame {
                 String password = new String(passwordmanagerField.getPassword());
                 if (info.passwordManager.equals(password)) {
                     JOptionPane.showMessageDialog(managerWindow, "Welcome Manager!");
-                    card = new Manager();
-                    new ScanCard("Manager", card);
+                    openChangeWindow();
+                    managerWindow.dispose();
+
                 } else {
                     JOptionPane.showMessageDialog(managerWindow, "Incorrect password.");
                 }
+
             }
         });
 
         managerWindow.add(centerPanel, BorderLayout.CENTER);
         managerWindow.setLocationRelativeTo(this);
         managerWindow.setVisible(true);
+        this.setVisible(false);
+    }
+
+    private void openChangeWindow() {
+        JFrame openChangeWindow = new JFrame("Manager Window");
+        openChangeWindow.setTitle("Manager Window");
+        openChangeWindow.setSize(400, 300);
+        openChangeWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new GridLayout(4, 1));
+        centerPanel.add(new JLabel("Enter New Room: "));
+        JTextField inputroom = new JTextField(10);
+        centerPanel.add(inputroom);
+        centerPanel.add(new JLabel("Enter New Floor: "));
+        JTextField inputfloor = new JTextField(10);
+        centerPanel.add(inputfloor);
+
+        JPanel footerPanel = new JPanel();
+        changeButton = new JButton("Submit");
+        footerPanel.add(changeButton);
+        openChangeWindow.add(footerPanel, BorderLayout.SOUTH);
+
+        changeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Set<Integer> newallowedRooms = Arrays.stream(inputroom.getText().split(","))
+                            .map(String::trim)
+                            .filter(s -> !s.isEmpty())
+                            .map(Integer::parseInt)
+                            .collect(Collectors.toSet());
+
+                    Set<Integer> newallowedFloors = Arrays.stream(inputfloor.getText().split(","))
+                            .map(String::trim)
+                            .filter(s -> !s.isEmpty())
+                            .map(Integer::parseInt)
+                            .collect(Collectors.toSet());
+                    card = new ManagerCardDecorator(new EmployeeKeycard(newallowedRooms, newallowedFloors));
+
+                    JOptionPane.showMessageDialog(openChangeWindow, "Updated successfully!");
+
+                    new ScanCard("Manager", card);
+                    openChangeWindow.dispose();
+
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(openChangeWindow, "Invalid input! Please enter numbers only.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+
+        openChangeWindow.add(centerPanel, BorderLayout.CENTER);
+        openChangeWindow.setLocationRelativeTo(this);
+        openChangeWindow.setVisible(true);
         this.setVisible(false);
     }
 

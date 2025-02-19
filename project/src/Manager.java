@@ -1,8 +1,6 @@
-import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.Arrays;
 
 public class Manager {
     private KeyCard keyCard;

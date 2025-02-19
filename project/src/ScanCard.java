@@ -3,10 +3,8 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class ScanCard extends JFrame {
-    private JPasswordField roomField, floorField;
+    private JTextField roomField, floorField;
     private JButton button;
-
-    informationCard info = informationCard.getInstance();
 
     public ScanCard(String role, Object card) {
         setTitle(role + " Window");
@@ -24,13 +22,13 @@ public class ScanCard extends JFrame {
 
         JPanel roomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         roomPanel.add(new JLabel("Room: "));
-        roomField = new JPasswordField(30);
+        roomField = new JTextField(30);
         roomPanel.add(roomField);
         mainPanel.add(roomPanel);
 
         JPanel floorPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         floorPanel.add(new JLabel("Floor: "));
-        floorField = new JPasswordField(30);
+        floorField = new JTextField(30);
         floorPanel.add(floorField);
         mainPanel.add(floorPanel);
 
@@ -43,8 +41,8 @@ public class ScanCard extends JFrame {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String roomString = new String(roomField.getPassword());
-                String floorString = new String(floorField.getPassword());
+                String roomString = roomField.getText();
+                String floorString = floorField.getText();
                 int roomNumber = Integer.parseInt(roomString);
                 int floorNumber = Integer.parseInt(floorString);
                 if (card instanceof Admin) {
@@ -75,14 +73,14 @@ public class ScanCard extends JFrame {
                         JOptionPane.showMessageDialog(null, "Room No Rights / Floor No Rights");
 
                     }
-                } else if (card instanceof Manager) {
-                    if ((((Manager) card).comeRoom(roomNumber)) == true) {
-                        if ((((Manager) card).comeFloor(floorNumber)) == true) {
+                } else if (card instanceof ManagerCardDecorator) {
+                    if ((((ManagerCardDecorator) card).canAccessRoom(roomNumber)) == true) {
+                        if ((((ManagerCardDecorator) card).canAccessFloor(floorNumber)) == true) {
                             JOptionPane.showMessageDialog(null, "Room Rights / Floor Rights");
                         } else {
                             JOptionPane.showMessageDialog(null, "Room Rights / Floor No Rights");
                         }
-                    } else if ((((Manager) card).comeFloor(floorNumber)) == true) {
+                    } else if ((((ManagerCardDecorator) card).canAccessFloor(floorNumber)) == true) {
                         JOptionPane.showMessageDialog(null, "Room No Rights / Floor Rights");
 
                     } else {
@@ -96,9 +94,9 @@ public class ScanCard extends JFrame {
         setVisible(true);
     }
 
-    /*
-     * public static void main(String[] args) {
-     * new ScanCard("test", null); // ไว้สำหรับเทสหน้านี้ครับ
-     * }
-     */
+/*
+     public static void main(String[] args) {
+     new ScanCard("test", null); // ไว้สำหรับเทสหน้านี้ครับ
+     }
+*/
 }
