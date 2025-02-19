@@ -1,8 +1,8 @@
 import java.util.Set;
 
 class CustomerCardDecorator extends BaseCardDecorator {
-    private static final Set<Integer> customerRooms = Set.of(201, 202, 203);
-    private static final Set<Integer> customerFloors = Set.of(1, 2);
+    private static final Set<Integer> customerRooms = Set.of(0);
+    private static final Set<Integer> customerFloors = Set.of(0);
 
     public CustomerCardDecorator(KeyCard card) {
         super(card);

@@ -1,10 +1,18 @@
+import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.Arrays;
 
 public class Manager {
     private KeyCard keyCard;
+    private informationCard info = informationCard.getInstance();
 
     public Manager() {
-        this.keyCard = new ManagerCardDecorator(new EmployeeKeycard(Set.of(), Set.of())); // Manager เข้าทุกที่
+        Set<Integer> allowedRooms = IntStream.of(info.roomManager).boxed().collect(Collectors.toSet());
+        Set<Integer> allowedFloors = IntStream.of(info.floorManager).boxed().collect(Collectors.toSet());
+
+        keyCard = new AdminCardDecorator(new EmployeeKeycard(allowedRooms, allowedFloors));
     }
 
     public boolean comeRoom(int r) {
@@ -13,9 +21,5 @@ public class Manager {
 
     public boolean comeFloor(int f) {
         return keyCard.canAccessFloor(f);
-    }
-
-    public void changeAccess() {
-        System.out.println("Manager can modify access rights.");
     }
 }

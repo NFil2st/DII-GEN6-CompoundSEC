@@ -1,8 +1,8 @@
 import java.util.Set;
 
 class AdminCardDecorator extends BaseCardDecorator {
-    private static final Set<Integer> adminRooms = Set.of(101, 102, 103);
-    private static final Set<Integer> adminFloors = Set.of(1, 2, 3);
+    private static final Set<Integer> adminRooms = Set.of(0);
+    private static final Set<Integer> adminFloors = Set.of(0);
 
     public AdminCardDecorator(KeyCard card) {
         super(card);

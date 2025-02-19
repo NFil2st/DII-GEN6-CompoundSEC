@@ -1,31 +1,4 @@
 import java.util.Set;
-import java.util.HashSet;
-
-class Card {
-    private int room;
-    private int floor;
-
-    public Card(int r, int f) {
-        room = r;
-        floor = f;
-    }
-
-    public int getRoom() {
-        return room;
-    }
-
-    public int getFloor() {
-        return floor;
-    }
-
-    public void setRoom(int room) {
-        this.room = room;
-    }
-
-    public void setFloor(int floor) {
-        this.floor = floor;
-    }
-}
 
 interface KeyCard {
     boolean canAccessRoom(int roomNumber);
@@ -39,6 +12,7 @@ class EmployeeKeycard implements KeyCard {
     public EmployeeKeycard(Set<Integer> rooms, Set<Integer> floors) {
         this.allowedRooms = rooms;
         this.allowedFloors = floors;
+        System.out.println("EmployeeKeycard initialized with rooms: " + allowedRooms + " and floors: " + allowedFloors);
     }
 
     @Override

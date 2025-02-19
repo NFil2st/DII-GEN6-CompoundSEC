@@ -36,15 +36,27 @@ public class Main {
             if (info.passwordManager.equals(password)) {
                 System.out.println("Welcome to Manager card!");
 
-                Set<Integer> allowedRooms = IntStream.of(info.roomAdmin).boxed().collect(Collectors.toSet());
-                Set<Integer> allowedFloors = IntStream.of(info.floorAdmin).boxed().collect(Collectors.toSet());
+                Set<Integer> allowedRooms = IntStream.of(info.roomManager).boxed().collect(Collectors.toSet());
+                Set<Integer> allowedFloors = IntStream.of(info.floorManager).boxed().collect(Collectors.toSet());
 
                 keyCard = new ManagerCardDecorator(new EmployeeKeycard(allowedRooms, allowedFloors));
 
                 System.out.print("Do you want to change access? (yes/no): ");
                 String response = sc.next();
                 if (response.equalsIgnoreCase("yes")) {
-                    System.out.println("Access changed.");
+                    System.out.println("Access change.");
+                    if (keyCard instanceof ManagerCardDecorator) {
+                        System.out.println("Enter new room access: ");
+                        int newRooms = sc.nextInt();
+                        System.out.println("Enter new floor access: ");
+                        int newFloors = sc.nextInt();
+                        Set<Integer> newallowedRooms = IntStream.of(newRooms).boxed().collect(Collectors.toSet());
+                        Set<Integer> newallowedFloors = IntStream.of(newFloors).boxed().collect(Collectors.toSet());
+
+                        keyCard = new ManagerCardDecorator(new EmployeeKeycard(newallowedRooms, newallowedFloors));
+                    } else {
+                        System.out.println("You are not a Manager. Access change denied.");
+                    }
                 }
             } else {
                 System.err.println("You have no right.");
