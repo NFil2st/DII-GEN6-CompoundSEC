@@ -4,13 +4,13 @@ import java.util.stream.IntStream;
 
 public class Manager {
     private KeyCard keyCard;
-    private informationCard info = informationCard.getInstance();
 
     public Manager() {
-        Set<Integer> allowedRooms = IntStream.of(info.roomManager).boxed().collect(Collectors.toSet());
-        Set<Integer> allowedFloors = IntStream.of(info.floorManager).boxed().collect(Collectors.toSet());
+        informationCard info = informationCard.getInstance();
+        Set<Integer> allowedRooms = IntStream.of(info.roomCustomer).boxed().collect(Collectors.toSet());
+        Set<Integer> allowedFloors = IntStream.of(info.floorCustomer).boxed().collect(Collectors.toSet());
 
-        keyCard = new AdminCardDecorator(new EmployeeKeycard(allowedRooms, allowedFloors));
+        this.keyCard = new AdminCardDecorator(new EmployeeKeycard(allowedRooms, allowedFloors));
     }
 
     public boolean comeRoom(int r) {

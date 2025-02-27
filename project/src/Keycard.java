@@ -1,3 +1,4 @@
+import javax.smartcardio.Card;
 import java.util.Set;
 
 interface KeyCard {

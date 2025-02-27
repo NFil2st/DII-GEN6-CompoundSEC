@@ -1,14 +1,15 @@
 import java.awt.*;
-import java.awt.event.*;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.Arrays;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import javax.swing.*;
 
 public class Framerole extends JFrame {
     private JComboBox<String> roleComboBox;
-    private JButton submitButton, sureButton, changeButton;
+    private JButton submitButton;
     private JPasswordField passwordadminField, passwordmanagerField;
+    private JTextField changeRoom, changeFloor;
+    private static ArrayList<String> accessLogs = new ArrayList<>();
 
     informationCard info = informationCard.getInstance();
     Object card = null;
@@ -18,7 +19,6 @@ public class Framerole extends JFrame {
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-
         setLayout(new BorderLayout());
 
         JPanel headerPanel = new JPanel();
@@ -32,23 +32,20 @@ public class Framerole extends JFrame {
         footerPanel.add(submitButton);
         add(footerPanel, BorderLayout.SOUTH);
 
-        submitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                handleRoleSelection();
-            }
-        });
+        submitButton.addActionListener(e -> handleRoleSelection());
     }
 
     private void handleRoleSelection() {
         int role = roleComboBox.getSelectedIndex();
+        String timestamp = getCurrentTime();
 
         if (role == 1) {
             openAdminWindow();
         } else if (role == 2) {
-            JOptionPane.showMessageDialog(this, "Welcome Customer!");
+            logAccess("Customer", timestamp);
+            JOptionPane.showMessageDialog(this, "Welcome Customer!\nAccess Time: " + timestamp);
             card = new Customer();
-            new ScanCard("Customer", card);
+            new ScanCard("Customer", card, accessLogs);
             this.dispose();
         } else if (role == 3) {
             openManagerWindow();
@@ -59,145 +56,129 @@ public class Framerole extends JFrame {
 
     private void openAdminWindow() {
         JFrame adminWindow = new JFrame("Admin Window");
-        adminWindow.setTitle("Admin Window");
         adminWindow.setSize(400, 300);
         adminWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new GridLayout(4, 1));
+        JPanel centerPanel = new JPanel(new GridLayout(4, 1));
         centerPanel.add(new JLabel("Enter Password (Admin only): "));
-        passwordadminField = new JPasswordField();
         passwordadminField = new JPasswordField(10);
         centerPanel.add(passwordadminField);
 
         JPanel footerPanel = new JPanel();
-        sureButton = new JButton("Submit");
+        JButton sureButton = new JButton("Submit");
         footerPanel.add(sureButton);
         adminWindow.add(footerPanel, BorderLayout.SOUTH);
 
-        sureButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String password = new String(passwordadminField.getPassword());
-                if (info.passwordAdmin.equals(password)) {
-                    JOptionPane.showMessageDialog(adminWindow, "Welcome Admin!");
-                    card = new Admin();
-                    new ScanCard("Admin", card);
-                    adminWindow.dispose();
-                } else {
-                    JOptionPane.showMessageDialog(adminWindow, "Incorrect password.");
-                }
+        sureButton.addActionListener(e -> {
+            String password = new String(passwordadminField.getPassword());
+            if (info.passwordAdmin.equals(password)) {
+                String timestamp = getCurrentTime();
+                logAccess("Admin", timestamp);
+                JOptionPane.showMessageDialog(adminWindow, "Welcome Admin!\nAccess Time: " + timestamp);
+                card = new Admin();
+                new ScanCard("Admin", card, accessLogs);
+                adminWindow.dispose();
+            } else {
+                JOptionPane.showMessageDialog(adminWindow, "Incorrect password.");
             }
         });
 
         adminWindow.add(centerPanel, BorderLayout.CENTER);
         adminWindow.setLocationRelativeTo(this);
         adminWindow.setVisible(true);
-        this.setVisible(false);
+        this.dispose();
     }
 
     private void openManagerWindow() {
         JFrame managerWindow = new JFrame("Manager Window");
-        managerWindow.setTitle("Manager Window");
         managerWindow.setSize(400, 300);
         managerWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new GridLayout(4, 1));
+        JPanel centerPanel = new JPanel(new GridLayout(4, 1));
         centerPanel.add(new JLabel("Enter Password (Manager only): "));
-        passwordmanagerField = new JPasswordField();
         passwordmanagerField = new JPasswordField(10);
         centerPanel.add(passwordmanagerField);
 
         JPanel footerPanel = new JPanel();
-        sureButton = new JButton("Submit");
+        JButton sureButton = new JButton("Submit");
         footerPanel.add(sureButton);
         managerWindow.add(footerPanel, BorderLayout.SOUTH);
 
-        sureButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String password = new String(passwordmanagerField.getPassword());
-                if (info.passwordManager.equals(password)) {
-                    JOptionPane.showMessageDialog(managerWindow, "Welcome Manager!");
-                    openChangeWindow();
-                    managerWindow.dispose();
-
-                } else {
-                    JOptionPane.showMessageDialog(managerWindow, "Incorrect password.");
-                }
-
+        sureButton.addActionListener(e -> {
+            String password = new String(passwordmanagerField.getPassword());
+            if (info.passwordManager.equals(password)) {
+                String timestamp = getCurrentTime();
+                logAccess("Manager", timestamp);
+                JOptionPane.showMessageDialog(managerWindow, "Welcome Manager!\nAccess Time: " + timestamp);
+                changeManagerWindow();
+                managerWindow.dispose();
+            } else {
+                JOptionPane.showMessageDialog(managerWindow, "Incorrect password.");
             }
         });
 
         managerWindow.add(centerPanel, BorderLayout.CENTER);
         managerWindow.setLocationRelativeTo(this);
         managerWindow.setVisible(true);
-        this.setVisible(false);
+        this.dispose();
     }
 
-    private void openChangeWindow() {
-        JFrame openChangeWindow = new JFrame("Manager Window");
-        openChangeWindow.setTitle("Manager Window");
-        openChangeWindow.setSize(400, 300);
-        openChangeWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    private void changeManagerWindow() {
+        JFrame changeManagerWindow = new JFrame("Manager Window");
+        changeManagerWindow.setSize(400, 300);
+        changeManagerWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new GridLayout(4, 1));
-        centerPanel.add(new JLabel("Enter New Room: "));
-        JTextField inputroom = new JTextField(10);
-        centerPanel.add(inputroom);
-        centerPanel.add(new JLabel("Enter New Floor: "));
-        JTextField inputfloor = new JTextField(10);
-        centerPanel.add(inputfloor);
+        JPanel centerPanel = new JPanel(new GridLayout(4, 1));
+        centerPanel.add(new JLabel("Change Room : "));
+        changeRoom = new JPasswordField(10);
+        centerPanel.add(changeRoom);
+        centerPanel.add(new JLabel("Change Floor : "));
+        changeFloor = new JPasswordField(10);
+        centerPanel.add(changeFloor);
 
         JPanel footerPanel = new JPanel();
-        changeButton = new JButton("Submit");
-        footerPanel.add(changeButton);
-        openChangeWindow.add(footerPanel, BorderLayout.SOUTH);
+        JButton ChangeButton = new JButton("Submit");
+        footerPanel.add(ChangeButton);
+        changeManagerWindow.add(footerPanel, BorderLayout.SOUTH);
 
-        changeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    Set<Integer> newallowedRooms = Arrays.stream(inputroom.getText().split(","))
-                            .map(String::trim)
-                            .filter(s -> !s.isEmpty())
-                            .map(Integer::parseInt)
-                            .collect(Collectors.toSet());
-
-                    Set<Integer> newallowedFloors = Arrays.stream(inputfloor.getText().split(","))
-                            .map(String::trim)
-                            .filter(s -> !s.isEmpty())
-                            .map(Integer::parseInt)
-                            .collect(Collectors.toSet());
-                    card = new ManagerCardDecorator(new EmployeeKeycard(newallowedRooms, newallowedFloors));
-
-                    JOptionPane.showMessageDialog(openChangeWindow, "Updated successfully!");
-
-                    new ScanCard("Manager", card);
-                    openChangeWindow.dispose();
-
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(openChangeWindow, "Invalid input! Please enter numbers only.", "Error", JOptionPane.ERROR_MESSAGE);
-                }
+        ChangeButton.addActionListener(e -> {
+            String roomText = new String(changeRoom.getText());
+            try {
+                int newroomNumber = Integer.parseInt(roomText);
+                info.roomCustomer = new int[]{newroomNumber};
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "Enter number");
             }
+            String floorText = new String(changeFloor.getText());
+            try {
+                int newfloorNumber = Integer.parseInt(floorText);
+                info.floorCustomer = new int[]{newfloorNumber};
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "Enter number");
+            }
+            card = new Manager();
+            new ScanCard("Manager", card, accessLogs);
+            changeManagerWindow.dispose();
         });
 
+        changeManagerWindow.add(centerPanel, BorderLayout.CENTER);
+        changeManagerWindow.setLocationRelativeTo(this);
+        changeManagerWindow.setVisible(true);
+        this.dispose();
+    }
 
-        openChangeWindow.add(centerPanel, BorderLayout.CENTER);
-        openChangeWindow.setLocationRelativeTo(this);
-        openChangeWindow.setVisible(true);
-        this.setVisible(false);
+    private void logAccess(String role, String timestamp) {
+        accessLogs.add(role + " accessed at " + timestamp);
+        accessLogs.add("----------------------------------------------------------------");
+    }
+
+    private String getCurrentTime() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return LocalDateTime.now().format(dtf);
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new Framerole().setVisible(true);
-            }
-        });
+        SwingUtilities.invokeLater(() -> new Framerole().setVisible(true));
     }
-
 }
+
