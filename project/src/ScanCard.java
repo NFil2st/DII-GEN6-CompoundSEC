@@ -128,10 +128,16 @@ public class ScanCard extends JFrame {
     }
 
     private void showAccessLogs() {
+        if (timeBasedEncryption.isCardValid()){}
         JFrame logWindow = new JFrame("Access Logs");
         logWindow.setSize(400, 300);
         logWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         logWindow.setLayout(new BorderLayout());
+
+        JPanel countPanel = new JPanel(new GridLayout(2, 1));
+        JLabel countLabel = new JLabel("Active now : " + TimeBasedEncryption.count);
+        countPanel.add(countLabel);
+        logWindow.add(countPanel, BorderLayout.NORTH);
 
         JTextArea logArea = new JTextArea();
         logArea.setEditable(false);
