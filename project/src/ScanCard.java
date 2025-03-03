@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class ScanCard extends JFrame {
     private JTextField roomField, floorField;
-    private JButton button , viewLogsButton , backHome;
+    private JButton button , viewLogsButton , backHome, de;
     private static ArrayList<String> accessLogs = new ArrayList<>();
     private static final int CARD_VALIDITY_SECONDS = 15;
     private static TimeBasedEncryption timeBasedEncryption = new TimeBasedEncryption(CARD_VALIDITY_SECONDS);
@@ -40,13 +40,16 @@ public class ScanCard extends JFrame {
         mainPanel.add(floorPanel);
 
         button = new JButton("Submit");
+        de = new JButton("revoke");
         backHome = new JButton("Home");
         viewLogsButton = new JButton("View Logs");
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        de.setAlignmentX(Component.CENTER_ALIGNMENT);
         backHome.setAlignmentX(Component.CENTER_ALIGNMENT);
         viewLogsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         mainPanel.add(button);
+        mainPanel.add(de);
         mainPanel.add(backHome);
         if (role.equals("Admin")) {
             mainPanel.add(viewLogsButton);
@@ -64,6 +67,17 @@ public class ScanCard extends JFrame {
                 dispose();
             }
         });
+
+        de.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Framerole frame = new Framerole();
+                frame.setVisible(true);
+                dispose();
+                TimeBasedEncryption.count--;
+            }
+        });
+        
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
